@@ -15,7 +15,7 @@ typedef struct Node
     KEYVALUE key;
     COLOR color;
     
-    struct Node *left, *right, *parent;
+    Node *left, *right, *parent;
 
 } NO, *PONT;
 
@@ -24,9 +24,7 @@ PONT createNode(KEYVALUE value){
 
     newNode->color = RED;
     newNode->key = value;
-    newNode->left = NULL;
-    newNode->right = NULL;
-    newNode->parent = NULL; 
+    newNode->left = newNode->right = newNode->parent = nullptr;
 
     return newNode;
 }
@@ -36,12 +34,12 @@ PONT turnLeft(PONT r, PONT &node){
     aux = node->right;
     node->right = aux->left;
 
-    if (node->right != NULL)
+    if (node->right != nullptr)
         node->right->parent = node;
     
     aux->parent = node->parent;
 
-    if (node->parent == NULL)
+    if (node->parent == nullptr)
         r = aux;
     else if (node == node->parent->left)
         node->parent->left = aux;
@@ -67,12 +65,13 @@ PONT turnRight(PONT r, PONT &node){
     aux = node->left;
     node->left = aux->right;
 
-    if(node->left == NULL)
+
+    if(node->left != nullptr)
         node->left->parent = node;
 
     aux->parent = node->parent;
 
-    if (node->parent == NULL)
+    if (node->parent == nullptr)
         r = aux;
     else  if (node == node->parent->left)
         node->parent->left = aux;
@@ -86,21 +85,18 @@ PONT turnRight(PONT r, PONT &node){
 }
 
 PONT fixViolationsRB(PONT r, PONT fixingNode){
-    PONT parent = NULL;
-    PONT grandParent = NULL;
-
-   
+    PONT parent = nullptr;
+    PONT grandParent = nullptr;
 
     while ((fixingNode != r) &&  (fixingNode->color != BLACK) &&  (fixingNode->parent->color == RED)){
         parent = fixingNode->parent;
         grandParent = fixingNode->parent->parent;
-        printf("\n\nTESTE SEGUIMENTO %d - %s \n", fixingNode->key, (fixingNode->color == RED)? "RED" : "BLACK");
-
+         PONT uncle = nullptr;
 
         if(parent == grandParent->left) {
-            PONT uncle = grandParent->right;
+            uncle = grandParent->right;
 
-            if (uncle != NULL && uncle->color == RED){
+            if (uncle != nullptr && uncle->color == RED){
                 grandParent->color = RED;
                 parent->color = BLACK;
                 uncle->color = BLACK;
@@ -119,15 +115,17 @@ PONT fixViolationsRB(PONT r, PONT fixingNode){
                 fixingNode = parent;
             }
         } else {
-            PONT uncle = grandParent->left;
+            uncle = grandParent->left;
 
-            if(uncle!=NULL && uncle->color == RED){
+            if(uncle!=nullptr && uncle->color == RED){
+
                 grandParent->color = RED;
                 parent->color = BLACK;
                 uncle->color = BLACK;
 
                 fixingNode = grandParent;
             } else {
+
                 if (fixingNode == parent->left){
                     r = turnRight(r, parent);
                     fixingNode = parent;
@@ -152,18 +150,16 @@ PONT fixViolationsRB(PONT r, PONT fixingNode){
 PONT insertNode(PONT r, KEYVALUE key){
     PONT newNode = createNode(key);
 
-    if (r == NULL){
+    if (r == nullptr){
         r = newNode;
         r->color = BLACK;
         return r;
     }
     
-
-
-    PONT auxNode = NULL;
+    PONT auxNode = nullptr;
     PONT pontIndiceNode = r;
 
-    while (pontIndiceNode != NULL)
+    while (pontIndiceNode != nullptr)
     {
         auxNode = pontIndiceNode;
 
@@ -173,16 +169,12 @@ PONT insertNode(PONT r, KEYVALUE key){
             pontIndiceNode = pontIndiceNode->right;
     }
 
-   
-
     newNode->parent = auxNode;
 
     if(newNode->key < auxNode->key)
         auxNode->left = newNode;
     else 
         auxNode->right = newNode;
-
-    
 
     PONT fixTree = fixViolationsRB(r, newNode);
 
@@ -191,7 +183,7 @@ PONT insertNode(PONT r, KEYVALUE key){
 }
 
 void inorderTraversal(Node* r) {
-    if (r == NULL)
+    if (r == nullptr)
         return;
 
     inorderTraversal(r->left);
@@ -200,7 +192,7 @@ void inorderTraversal(Node* r) {
 }
 
 PONT init(){
-    return (NULL);
+    return (nullptr);
 }
 
 int main(int argc, char **argv) {
@@ -212,9 +204,9 @@ int main(int argc, char **argv) {
     root = insertNode(root,12);
     root = insertNode(root,15);
     root = insertNode(root,5);
-    // root = insertNode(root,20);
-    // root = insertNode(root,11);
-    // root = insertNode(root,2);
+    root = insertNode(root,20);
+    root = insertNode(root,11);
+    root = insertNode(root,2);
 
     inorderTraversal(root);
 
